@@ -14,18 +14,18 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseStatusCodePagesWithReExecute("/errors/{0}");
-// if (app.Environment.IsDevelopment())
-// {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-// }
-app.UseStaticFiles();
-app.UseHttpsRedirection();
 
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseStaticFiles();
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
+
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var context = services.GetRequiredService<StoreContext>();
@@ -37,6 +37,7 @@ try
 }
 catch (Exception ex)
 {
- logger.LogError(ex, "An error Occured during migration");
+    logger.LogError(ex, "An error occured during migration");
 }
+
 app.Run();
